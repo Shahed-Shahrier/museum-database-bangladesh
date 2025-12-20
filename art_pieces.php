@@ -78,8 +78,8 @@ while($g = $galleries_res->fetch_assoc()) { $all_galleries[] = $g; }
 <script>
 const allArtists = <?php echo json_encode($all_artists); ?>;
 const allGalleries = <?php echo json_encode($all_galleries); ?>;
-const selectedArtist = "<?php echo $edit ? $edit['Artist_ID'] : ''; ?>";
-const selectedGallery = "<?php echo $edit ? $edit['Gallery_ID'] : ''; ?>";
+const selectedArtist = <?php echo $edit ? json_encode(intval($edit['Artist_ID'])) : '0'; ?>;
+const selectedGallery = <?php echo $edit ? json_encode(intval($edit['Gallery_ID'])) : '0'; ?>;
 
 function updateDropdowns() {
     const museumId = document.getElementById('museum_select').value;
