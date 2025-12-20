@@ -10,7 +10,7 @@ if (is_admin()) {
             echo '<div class="alert alert-danger">Only Super Admins can delete museums.</div>';
         } else {
             $id = $_POST['Museum_ID'];
-            $stmt = $conn->prepare('DELETE FROM Museum WHERE Museum_ID=?');
+            $stmt = $conn->prepare('DELETE FROM museum WHERE Museum_ID=?');
             $stmt->bind_param('i', $id);
             if (!$stmt->execute()) {
                 echo '<div class="alert alert-danger">Delete failed: ' . h($stmt->error) . '</div>';
@@ -29,10 +29,10 @@ if (is_admin()) {
         $Type = $_POST['Type'];
 
         if ($is_edit) {
-            $stmt = $conn->prepare('UPDATE Museum SET `Name`=?, `City`=?, `Contact_no`=?, `Email`=?, `Type`=? WHERE Museum_ID=?');
+            $stmt = $conn->prepare('UPDATE museum SET `Name`=?, `City`=?, `Contact_no`=?, `Email`=?, `Type`=? WHERE Museum_ID=?');
             $stmt->bind_param('sssssi', $Name, $City, $Contact_no, $Email, $Type, $_POST['Museum_ID']);
         } else {
-            $stmt = $conn->prepare('INSERT INTO Museum (`Name`, `City`, `Contact_no`, `Email`, `Type`) VALUES (?, ?, ?, ?, ?)');
+            $stmt = $conn->prepare('INSERT INTO museum (`Name`, `City`, `Contact_no`, `Email`, `Type`) VALUES (?, ?, ?, ?, ?)');
             $stmt->bind_param('sssss', $Name, $City, $Contact_no, $Email, $Type);
         }
 
@@ -47,7 +47,7 @@ if (is_admin()) {
 $edit_museum = null;
 if (is_admin() && isset($_GET['edit'])) {
     $id = intval($_GET['edit']);
-    $rs = $conn->prepare('SELECT Museum_ID, Name, City, Contact_no, Email, Type FROM Museum WHERE Museum_ID=?');
+    $rs = $conn->prepare('SELECT Museum_ID, Name, City, Contact_no, Email, Type FROM museum WHERE Museum_ID=?');
     $rs->bind_param('i', $id);
     $rs->execute();
     $row = $rs->get_result()->fetch_assoc();
@@ -99,7 +99,7 @@ if (is_admin() && isset($_GET['edit'])) {
 
     <div class="grid">
         <?php
-        $sql = "SELECT Museum_ID, Name, City, Contact_no, Email, Type FROM Museum";
+        $sql = "SELECT Museum_ID, Name, City, Contact_no, Email, Type FROM museum";
         if(isset($_SESSION['admin_museum_id'])){
             $sql .= " WHERE Museum_ID = " . intval($_SESSION['admin_museum_id']);
         }

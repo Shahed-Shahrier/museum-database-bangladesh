@@ -54,7 +54,9 @@ The system uses a relational database with the following key tables:
     ```bash
     sudo mysql -e "CREATE DATABASE IF NOT EXISTS MUSEUM_DATABASE;"
     sudo mysql MUSEUM_DATABASE < museum_database.sql
-    sudo mysql MUSEUM_DATABASE < update_schema.sql
+    sudo mysql MUSEUM_DATABASE < update_tickets_event.sql
+    sudo mysql MUSEUM_DATABASE < update_users_role.sql
+    sudo mysql MUSEUM_DATABASE < create_bookings_table.sql
     ```
 
 ### 2. Configuration
@@ -74,9 +76,98 @@ php -c php-custom.ini -S 0.0.0.0:8000
 **On XAMPP (Windows):**
 Place the project folder in `htdocs` and start Apache and MySQL via the XAMPP Control Panel. Access via `http://localhost/your-folder-name`.
 
+### 4. Hosting in GitHub Codespaces
+GitHub Codespaces provides a complete development environment with PHP and MySQL pre-configured:
+
+**Automatic Setup (Recommended):**
+1.  **Open in Codespaces**: Click "Code" → "Create codespace on main" (or "Rebuild container" if you already have one)
+2.  The `.devcontainer` configuration will automatically:
+    - Build custom Docker image with PHP 8.3 and mysqli extension pre-installed
+    - Set up MySQL database
+    - Import all database schemas
+    - Configure port forwarding
+3.  **Wait for setup to complete** - You'll see "✅ Database setup complete!" message
+4.  **Start the Application**:
+    ```bash
+    php -S 0.0.0.0:8000
+    ```
+5.  **Access Your Application**: Codespaces will forward port 8000 and provide a public URL (e.g., `https://username-repo-xxxxx.github.dev`)
+6.  **Make Port Public** (Optional): In the Ports panel, right-click port 8000 and select "Port Visibility" → "Public" to share with others
+
+**Important**: If you're getting "mysqli not found" error:
+- You need to **rebuild the container** for the new Dockerfile to take effect
+- Click on the "Dev Container" icon in the bottom-left corner
+- Select "Rebuild Container" from the menu
+- Wait for the rebuild to complete
+
+**Manual Setup (if automatic setup fails):**
+1.  **Install PHP mysqli extension**:
+    ```bash
+    sudo apt-get update
+    sudo apt-get install -y php8.3-mysqli php8.3-mysql
+    sudo phpenmod mysqli
+    ```
+2.  **Restart PHP-FPM or your terminal** to load the extension
+3.  **Start MySQL Service**:
+    ```bash
+    sudo systemctl start mysql
+    sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '';"
+    sudo mysql -e "FLUSH PRIVILEGES;"
+    ```
+4.  **Create and Import Database**:
+    ```bash
+    mysql -u root -e "CREATE DATABASE IF NOT EXISTS MUSEUM_DATABASE;"
+    mysql -u root MUSEUM_DATABASE < museum_database.sql
+    mysql -u root MUSEUM_DATABASE < update_tickets_event.sql
+    mysql -u root MUSEUM_DATABASE < update_users_role.sql
+    mysql -u root MUSEUM_DATABASE < create_bookings_table.sql
+    ```
+5.  **Start the Application**:
+    ```bash
+    php -S 0.0.0.0:8000
+    ```
+
+**Note**: GitHub Codespaces is a development environment, not permanent hosting. For production use, deploy to a VPS, shared hosting, or PaaS platform.
+
+## Deployment for Online Hosting
+
+### Environment Variables (Recommended for Production)
+For security and flexibility, `config.php` supports environment variables for database configuration:
+
+*   `DB_HOST`: Database host (default: `localhost`)
+*   `DB_USER`: Database username (default: `root`)
+*   `DB_PASS`: Database password (default: empty)
+*   `DB_NAME`: Database name (default: `MUSEUM_DATABASE`)
+
+### Production Considerations
+1.  **Security**:
+    *   Set `display_errors = Off` in production PHP configuration
+    *   Use strong database passwords
+    *   Set environment variables instead of using defaults
+    *   Enable HTTPS for secure connections
+    *   Review and harden file permissions
+
+2.  **Database**:
+    *   Use lowercase table names (already implemented)
+    *   Ensure MySQL/MariaDB is configured for case-insensitive table names on Linux if needed
+    *   Regular backups of the database
+    *   Apply all schema updates: `museum_database.sql`, `update_tickets_event.sql`, `update_users_role.sql`, `create_bookings_table.sql`
+
+3.  **Web Server**:
+    *   Configure appropriate PHP-FPM/Apache settings
+    *   Set up virtual hosts correctly
+    *   Enable necessary PHP extensions: `mysqli`, `pdo_mysql`
+
+### Hosting Platforms
+This application can be deployed on:
+*   **GitHub Codespaces**: Development environment with port forwarding (not for production)
+*   **Shared Hosting**: Upload files via FTP, import database via phpMyAdmin (e.g., InfinityFree, 000webhost)
+*   **VPS/Cloud**: Ubuntu/Debian with Apache/Nginx + PHP 8.0+ + MySQL/MariaDB (e.g., DigitalOcean, Linode)
+*   **PaaS**: Heroku, Railway, Google Cloud, AWS (configure environment variables)
+
 ## File Structure
 *   `index.php`: Homepage.
-*   `config.php`: Database connection settings.
+*   `config.php`: Database connection settings with environment variable support.
 *   `auth.php`: Authentication helper functions.
 *   `header.php` / `footer.php`: Reusable UI components.
 *   **Content Pages**: `museums.php`, `events.php`, `art_pieces.php`, `artists.php`, `galleries.php`.

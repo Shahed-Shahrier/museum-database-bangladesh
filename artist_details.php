@@ -12,7 +12,7 @@ if ($id <= 0) {
 }
 
 // Fetch Artist Details
-$stmt = $conn->prepare("SELECT * FROM Artist WHERE Artist_ID = ?");
+$stmt = $conn->prepare("SELECT * FROM artist WHERE Artist_ID = ?");
 $stmt->bind_param("i", $id);
 $stmt->execute();
 $artist = $stmt->get_result()->fetch_assoc();
@@ -29,18 +29,18 @@ $museum_id = isset($_GET['museum_id']) ? intval($_GET['museum_id']) : 0;
 if ($museum_id > 0) {
     $stmt = $conn->prepare("
         SELECT a.*, g.Name as GalleryName, m.Name as MuseumName
-        FROM Art_Piece a 
-        JOIN Gallery g ON a.Gallery_ID = g.Gallery_ID 
-        JOIN Museum m ON g.Museum_ID = m.Museum_ID
+        FROM art_piece a 
+        JOIN gallery g ON a.Gallery_ID = g.Gallery_ID 
+        JOIN museum m ON g.Museum_ID = m.Museum_ID
         WHERE a.Artist_ID = ? AND m.Museum_ID = ?
     ");
     $stmt->bind_param("ii", $id, $museum_id);
 } else {
     $stmt = $conn->prepare("
         SELECT a.*, g.Name as GalleryName, m.Name as MuseumName
-        FROM Art_Piece a 
-        JOIN Gallery g ON a.Gallery_ID = g.Gallery_ID 
-        JOIN Museum m ON g.Museum_ID = m.Museum_ID
+        FROM art_piece a 
+        JOIN gallery g ON a.Gallery_ID = g.Gallery_ID 
+        JOIN museum m ON g.Museum_ID = m.Museum_ID
         WHERE a.Artist_ID = ?
     ");
     $stmt->bind_param("i", $id);

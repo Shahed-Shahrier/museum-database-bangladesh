@@ -1,6 +1,6 @@
 <?php include "config.php"; include "auth.php"; include "header.php"; ?>
 <div class="card"><h2>Galleries</h2>
-<?php if(is_admin() && isset($_POST['delete']) && isset($_POST['Gallery_ID'])){ $id=$_POST['Gallery_ID']; $st=$conn->prepare('DELETE FROM Gallery WHERE Gallery_ID=?'); $st->bind_param('i',$id); if(!$st->execute()) echo '<div class="alert">Delete failed: '.h($st->error).'</div>'; else echo '<div class="alert">Deleted ✔</div>'; } ?>
+<?php if(is_admin() && isset($_POST['delete']) && isset($_POST['Gallery_ID'])){ $id=$_POST['Gallery_ID']; $st=$conn->prepare('DELETE FROM gallery WHERE Gallery_ID=?'); $st->bind_param('i',$id); if(!$st->execute()) echo '<div class="alert">Delete failed: '.h($st->error).'</div>'; else echo '<div class="alert">Deleted ✔</div>'; } ?>
 <?php if(is_admin() && isset($_POST['save'])){ $is_edit=($_POST['is_edit']=='1');
 $Name=$_POST['Name'];
 $Floor_no=$_POST['Floor_no'];
@@ -12,12 +12,12 @@ if(isset($_SESSION['admin_museum_id'])){
     $Museum_ID = $_SESSION['admin_museum_id'];
 }
 
-if($is_edit){ $st=$conn->prepare('UPDATE Gallery SET `Name`=?, `Floor_no`=?, `Room_no`=?, `Museum_ID`=? WHERE Gallery_ID=?'); $st->bind_param('sisii',$Name,$Floor_no,$Room_no,$Museum_ID,$_POST['Gallery_ID']); } else { $st=$conn->prepare('INSERT INTO Gallery (`Name`, `Floor_no`, `Room_no`, `Museum_ID`) VALUES (?, ?, ?, ?)'); $st->bind_param('sisi',$Name,$Floor_no,$Room_no,$Museum_ID); } if(!$st->execute()) echo '<div class="alert">Save failed: '.h($st->error).'</div>'; else echo '<div class="alert">Saved ✔</div>'; } ?>
+if($is_edit){ $st=$conn->prepare('UPDATE gallery SET `Name`=?, `Floor_no`=?, `Room_no`=?, `Museum_ID`=? WHERE Gallery_ID=?'); $st->bind_param('sisii',$Name,$Floor_no,$Room_no,$Museum_ID,$_POST['Gallery_ID']); } else { $st=$conn->prepare('INSERT INTO gallery (`Name`, `Floor_no`, `Room_no`, `Museum_ID`) VALUES (?, ?, ?, ?)'); $st->bind_param('sisi',$Name,$Floor_no,$Room_no,$Museum_ID); } if(!$st->execute()) echo '<div class="alert">Save failed: '.h($st->error).'</div>'; else echo '<div class="alert">Saved ✔</div>'; } ?>
 <?php 
 $edit=null; 
 if(is_admin() && isset($_GET['edit'])){ 
     $id=intval($_GET['edit']); 
-    $rs=$conn->prepare('SELECT Gallery_ID, Name, Floor_no, Room_no, Museum_ID FROM Gallery WHERE Gallery_ID=?'); 
+    $rs=$conn->prepare('SELECT Gallery_ID, Name, Floor_no, Room_no, Museum_ID FROM gallery WHERE Gallery_ID=?'); 
     $rs->bind_param('i',$id); 
     $rs->execute(); 
     $row=$rs->get_result()->fetch_assoc(); 
@@ -25,7 +25,7 @@ if(is_admin() && isset($_GET['edit'])){
 } 
 
 // Fetch museums for dropdown
-$museums_res = $conn->query("SELECT Museum_ID, Name FROM Museum ORDER BY Name");
+$museums_res = $conn->query("SELECT Museum_ID, Name FROM museum ORDER BY Name");
 $museums = [];
 while($m = $museums_res->fetch_assoc()) { $museums[] = $m; }
 ?>
@@ -60,7 +60,7 @@ while($m = $museums_res->fetch_assoc()) { $museums[] = $m; }
 <?php endif; ?>
 <div class="card"><h2>All Galleries</h2>
 <?php 
-$sql = "SELECT g.Gallery_ID, g.Name, g.Floor_no, g.Room_no, m.Name as MuseumName FROM Gallery g LEFT JOIN Museum m ON g.Museum_ID = m.Museum_ID";
+$sql = "SELECT g.Gallery_ID, g.Name, g.Floor_no, g.Room_no, m.Name as MuseumName FROM gallery g LEFT JOIN museum m ON g.Museum_ID = m.Museum_ID";
 if(isset($_SESSION['admin_museum_id'])){
     $sql .= " WHERE g.Museum_ID = " . intval($_SESSION['admin_museum_id']);
 }

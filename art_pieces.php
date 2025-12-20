@@ -1,6 +1,6 @@
 <?php include "config.php"; include "auth.php"; include "header.php"; ?>
 <div class="card"><h2>Art Pieces</h2>
-<?php if(is_admin() && isset($_POST['delete']) && isset($_POST['Art_ID'])){ $id=$_POST['Art_ID']; $st=$conn->prepare('DELETE FROM Art_Piece WHERE Art_ID=?'); $st->bind_param('i',$id); if(!$st->execute()) echo '<div class="alert">Delete failed: '.h($st->error).'</div>'; else echo '<div class="alert">Deleted ✔</div>'; } ?>
+<?php if(is_admin() && isset($_POST['delete']) && isset($_POST['Art_ID'])){ $id=$_POST['Art_ID']; $st=$conn->prepare('DELETE FROM art_piece WHERE Art_ID=?'); $st->bind_param('i',$id); if(!$st->execute()) echo '<div class="alert">Delete failed: '.h($st->error).'</div>'; else echo '<div class="alert">Deleted ✔</div>'; } ?>
 <?php if(is_admin() && isset($_POST['save'])){ $is_edit=($_POST['is_edit']=='1');
 $Title=$_POST['Title'];
 $Creation_date=$_POST['Creation_date'];
@@ -8,13 +8,13 @@ $Acquisition_date=$_POST['Acquisition_date'];
 $Medium=$_POST['Medium'];
 $Artist_ID=$_POST['Artist_ID'];
 $Gallery_ID=$_POST['Gallery_ID'];
-if($is_edit){ $st=$conn->prepare('UPDATE Art_Piece SET `Title`=?, `Creation_date`=?, `Acquisition_date`=?, `Medium`=?, `Artist_ID`=?, `Gallery_ID`=? WHERE Art_ID=?'); $st->bind_param('ssssiii',$Title,$Creation_date,$Acquisition_date,$Medium,$Artist_ID,$Gallery_ID,$_POST['Art_ID']); } else { $st=$conn->prepare('INSERT INTO Art_Piece (`Title`, `Creation_date`, `Acquisition_date`, `Medium`, `Artist_ID`, `Gallery_ID`) VALUES (?, ?, ?, ?, ?, ?)'); $st->bind_param('ssssii',$Title,$Creation_date,$Acquisition_date,$Medium,$Artist_ID,$Gallery_ID); } if(!$st->execute()) echo '<div class="alert">Save failed: '.h($st->error).'</div>'; else echo '<div class="alert">Saved ✔</div>'; } ?>
+if($is_edit){ $st=$conn->prepare('UPDATE art_piece SET `Title`=?, `Creation_date`=?, `Acquisition_date`=?, `Medium`=?, `Artist_ID`=?, `Gallery_ID`=? WHERE Art_ID=?'); $st->bind_param('ssssiii',$Title,$Creation_date,$Acquisition_date,$Medium,$Artist_ID,$Gallery_ID,$_POST['Art_ID']); } else { $st=$conn->prepare('INSERT INTO art_piece (`Title`, `Creation_date`, `Acquisition_date`, `Medium`, `Artist_ID`, `Gallery_ID`) VALUES (?, ?, ?, ?, ?, ?)'); $st->bind_param('ssssii',$Title,$Creation_date,$Acquisition_date,$Medium,$Artist_ID,$Gallery_ID); } if(!$st->execute()) echo '<div class="alert">Save failed: '.h($st->error).'</div>'; else echo '<div class="alert">Saved ✔</div>'; } ?>
 <?php 
 $edit=null; 
 if(is_admin() && isset($_GET['edit'])){ 
     $id=intval($_GET['edit']); 
     // Fetch Museum_ID as well to pre-select the museum dropdown
-    $rs=$conn->prepare('SELECT ap.Art_ID, ap.Title, ap.Creation_date, ap.Acquisition_date, ap.Medium, ap.Artist_ID, ap.Gallery_ID, g.Museum_ID FROM Art_Piece ap LEFT JOIN Gallery g ON ap.Gallery_ID = g.Gallery_ID WHERE ap.Art_ID=?'); 
+    $rs=$conn->prepare('SELECT ap.Art_ID, ap.Title, ap.Creation_date, ap.Acquisition_date, ap.Medium, ap.Artist_ID, ap.Gallery_ID, g.Museum_ID FROM art_piece ap LEFT JOIN gallery g ON ap.Gallery_ID = g.Gallery_ID WHERE ap.Art_ID=?'); 
     $rs->bind_param('i',$id); 
     $rs->execute(); 
     $row=$rs->get_result()->fetch_assoc(); 
@@ -22,17 +22,17 @@ if(is_admin() && isset($_GET['edit'])){
 } 
 
 // Fetch Museums
-$museums_res = $conn->query("SELECT Museum_ID, Name FROM Museum ORDER BY Name");
+$museums_res = $conn->query("SELECT Museum_ID, Name FROM museum ORDER BY Name");
 $museums = [];
 while($m = $museums_res->fetch_assoc()) { $museums[] = $m; }
 
 // Fetch Artists (with Museum_ID)
-$artists_res = $conn->query("SELECT Artist_ID, Name, Museum_ID FROM Artist ORDER BY Name");
+$artists_res = $conn->query("SELECT Artist_ID, Name, Museum_ID FROM artist ORDER BY Name");
 $all_artists = [];
 while($a = $artists_res->fetch_assoc()) { $all_artists[] = $a; }
 
 // Fetch Galleries (with Museum_ID)
-$galleries_res = $conn->query("SELECT Gallery_ID, Name, Museum_ID FROM Gallery ORDER BY Name");
+$galleries_res = $conn->query("SELECT Gallery_ID, Name, Museum_ID FROM gallery ORDER BY Name");
 $all_galleries = [];
 while($g = $galleries_res->fetch_assoc()) { $all_galleries[] = $g; }
 ?>
@@ -78,8 +78,8 @@ while($g = $galleries_res->fetch_assoc()) { $all_galleries[] = $g; }
 <script>
 const allArtists = <?php echo json_encode($all_artists); ?>;
 const allGalleries = <?php echo json_encode($all_galleries); ?>;
-const selectedArtist = "<?php echo $edit ? $edit['Artist_ID'] : ''; ?>";
-const selectedGallery = "<?php echo $edit ? $edit['Gallery_ID'] : ''; ?>";
+const selectedArtist = <?php echo $edit ? json_encode(intval($edit['Artist_ID'])) : '0'; ?>;
+const selectedGallery = <?php echo $edit ? json_encode(intval($edit['Gallery_ID'])) : '0'; ?>;
 
 function updateDropdowns() {
     const museumId = document.getElementById('museum_select').value;
@@ -123,7 +123,7 @@ document.addEventListener('DOMContentLoaded', updateDropdowns);
 <?php endif; ?>
 <div class="card"><h2>All Art Pieces</h2>
 <?php 
-$sql = "SELECT ap.Art_ID, ap.Title, ap.Creation_date, ap.Acquisition_date, ap.Medium, a.Name as ArtistName, g.Name as GalleryName, m.Name as MuseumName FROM Art_Piece ap LEFT JOIN Artist a ON ap.Artist_ID = a.Artist_ID LEFT JOIN Gallery g ON ap.Gallery_ID = g.Gallery_ID LEFT JOIN Museum m ON g.Museum_ID = m.Museum_ID";
+$sql = "SELECT ap.Art_ID, ap.Title, ap.Creation_date, ap.Acquisition_date, ap.Medium, a.Name as ArtistName, g.Name as GalleryName, m.Name as MuseumName FROM art_piece ap LEFT JOIN artist a ON ap.Artist_ID = a.Artist_ID LEFT JOIN gallery g ON ap.Gallery_ID = g.Gallery_ID LEFT JOIN museum m ON g.Museum_ID = m.Museum_ID";
 if(isset($_SESSION['admin_museum_id'])){
     $sql .= " WHERE g.Museum_ID = " . intval($_SESSION['admin_museum_id']);
 }

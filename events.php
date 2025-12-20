@@ -1,6 +1,6 @@
 <?php include "config.php"; include "auth.php"; include "header.php"; ?>
 <div class="card"><h2>Events</h2>
-<?php if(is_admin() && isset($_POST['delete']) && isset($_POST['Event_ID'])){ $id=$_POST['Event_ID']; $st=$conn->prepare('DELETE FROM Events WHERE Event_ID=?'); $st->bind_param('i',$id); if(!$st->execute()) echo '<div class="alert">Delete failed: '.h($st->error).'</div>'; else echo '<div class="alert">Deleted ✔</div>'; } ?>
+<?php if(is_admin() && isset($_POST['delete']) && isset($_POST['Event_ID'])){ $id=$_POST['Event_ID']; $st=$conn->prepare('DELETE FROM events WHERE Event_ID=?'); $st->bind_param('i',$id); if(!$st->execute()) echo '<div class="alert">Delete failed: '.h($st->error).'</div>'; else echo '<div class="alert">Deleted ✔</div>'; } ?>
 <?php if(is_admin() && isset($_POST['save'])){ 
     $is_edit=($_POST['is_edit']=='1');
     $Name=$_POST['Name'];
@@ -10,13 +10,13 @@
     $Museum_ID = !empty($_POST['Museum_ID']) ? intval($_POST['Museum_ID']) : null;
 
     if($is_edit){ 
-        $st=$conn->prepare('UPDATE Events SET `Name`=?, `Date`=?, `Description`=?, `Type`=? WHERE Event_ID=?'); 
+        $st=$conn->prepare('UPDATE events SET `Name`=?, `Date`=?, `Description`=?, `Type`=? WHERE Event_ID=?'); 
         $st->bind_param('ssssi',$Name,$Date,$Description,$Type,$_POST['Event_ID']); 
         if($st->execute()) {
             $eid = intval($_POST['Event_ID']);
-            $conn->query("DELETE FROM Museum_Event WHERE Event_ID=$eid");
+            $conn->query("DELETE FROM museum_event WHERE Event_ID=$eid");
             if($Museum_ID) {
-                $st2 = $conn->prepare('INSERT INTO Museum_Event (Museum_ID, Event_ID) VALUES (?, ?)');
+                $st2 = $conn->prepare('INSERT INTO museum_event (Museum_ID, Event_ID) VALUES (?, ?)');
                 $st2->bind_param('ii', $Museum_ID, $eid);
                 $st2->execute();
             }
@@ -25,12 +25,12 @@
             echo '<div class="alert">Save failed: '.h($st->error).'</div>';
         }
     } else { 
-        $st=$conn->prepare('INSERT INTO Events (`Name`, `Date`, `Description`, `Type`) VALUES (?, ?, ?, ?)'); 
+        $st=$conn->prepare('INSERT INTO events (`Name`, `Date`, `Description`, `Type`) VALUES (?, ?, ?, ?)'); 
         $st->bind_param('ssss',$Name,$Date,$Description,$Type); 
         if($st->execute()) {
             $eid = $conn->insert_id;
             if($Museum_ID) {
-                $st2 = $conn->prepare('INSERT INTO Museum_Event (Museum_ID, Event_ID) VALUES (?, ?)');
+                $st2 = $conn->prepare('INSERT INTO museum_event (Museum_ID, Event_ID) VALUES (?, ?)');
                 $st2->bind_param('ii', $Museum_ID, $eid);
                 $st2->execute();
             }
@@ -44,14 +44,14 @@
 $edit=null; 
 if(is_admin() && isset($_GET['edit'])){ 
     $id=intval($_GET['edit']); 
-    $rs=$conn->prepare('SELECT e.Event_ID, e.Name, e.Date, e.Description, e.Type, me.Museum_ID FROM Events e LEFT JOIN Museum_Event me ON e.Event_ID = me.Event_ID WHERE e.Event_ID=? LIMIT 1'); 
+    $rs=$conn->prepare('SELECT e.Event_ID, e.Name, e.Date, e.Description, e.Type, me.Museum_ID FROM events e LEFT JOIN museum_event me ON e.Event_ID = me.Event_ID WHERE e.Event_ID=? LIMIT 1'); 
     $rs->bind_param('i',$id); 
     $rs->execute(); 
     $row=$rs->get_result()->fetch_assoc(); 
     if($row){ $edit=$row; } 
 } 
 // Fetch museums for dropdown
-$museums_res = $conn->query("SELECT Museum_ID, Name FROM Museum ORDER BY Name");
+$museums_res = $conn->query("SELECT Museum_ID, Name FROM museum ORDER BY Name");
 $museums = [];
 while($m = $museums_res->fetch_assoc()) { $museums[] = $m; }
 ?>
@@ -84,7 +84,7 @@ while($m = $museums_res->fetch_assoc()) { $museums[] = $m; }
 <?php endif; ?>
 <div class="card"><h2>All Events</h2>
 <?php 
-$sql = "SELECT e.Event_ID, e.Name, e.Date, e.Description, e.Type, GROUP_CONCAT(m.Name SEPARATOR ', ') as MuseumName FROM Events e LEFT JOIN Museum_Event me ON e.Event_ID = me.Event_ID LEFT JOIN Museum m ON me.Museum_ID = m.Museum_ID";
+$sql = "SELECT e.Event_ID, e.Name, e.Date, e.Description, e.Type, GROUP_CONCAT(m.Name SEPARATOR ', ') as MuseumName FROM events e LEFT JOIN museum_event me ON e.Event_ID = me.Event_ID LEFT JOIN museum m ON me.Museum_ID = m.Museum_ID";
 if(isset($_SESSION['admin_museum_id'])){
     $sql .= " WHERE me.Museum_ID = " . intval($_SESSION['admin_museum_id']);
 }

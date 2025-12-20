@@ -12,7 +12,7 @@ if ($id <= 0) {
 }
 
 // Fetch Gallery Details
-$stmt = $conn->prepare("SELECT g.*, m.Name as MuseumName FROM Gallery g JOIN Museum m ON g.Museum_ID = m.Museum_ID WHERE Gallery_ID = ?");
+$stmt = $conn->prepare("SELECT g.*, m.Name as MuseumName FROM gallery g JOIN museum m ON g.Museum_ID = m.Museum_ID WHERE Gallery_ID = ?");
 $stmt->bind_param("i", $id);
 $stmt->execute();
 $gallery = $stmt->get_result()->fetch_assoc();
@@ -26,8 +26,8 @@ if (!$gallery) {
 // Fetch Art Pieces in this Gallery
 $stmt = $conn->prepare("
     SELECT a.*, ar.Name as ArtistName
-    FROM Art_Piece a 
-    JOIN Artist ar ON a.Artist_ID = ar.Artist_ID
+    FROM art_piece a 
+    JOIN artist ar ON a.Artist_ID = ar.Artist_ID
     WHERE a.Gallery_ID = ?
 ");
 $stmt->bind_param("i", $id);
