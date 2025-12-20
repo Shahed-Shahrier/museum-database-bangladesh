@@ -1,11 +1,9 @@
 {
   "name": "Museum Database Bangladesh",
-  "image": "mcr.microsoft.com/devcontainers/php:8.3",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
   "features": {
-    "ghcr.io/devcontainers/features/php:1": {
-      "version": "8.3",
-      "installComposer": false
-    },
     "ghcr.io/devcontainers-contrib/features/mysql-homebrew:1": {}
   },
   "postCreateCommand": "bash .devcontainer/setup.sh",

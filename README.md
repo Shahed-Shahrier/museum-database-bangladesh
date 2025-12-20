@@ -80,18 +80,25 @@ Place the project folder in `htdocs` and start Apache and MySQL via the XAMPP Co
 GitHub Codespaces provides a complete development environment with PHP and MySQL pre-configured:
 
 **Automatic Setup (Recommended):**
-1.  **Open in Codespaces**: Click "Code" → "Create codespace on main" in your GitHub repository
+1.  **Open in Codespaces**: Click "Code" → "Create codespace on main" (or "Rebuild container" if you already have one)
 2.  The `.devcontainer` configuration will automatically:
-    - Install PHP 8.3 with mysqli extension
+    - Build custom Docker image with PHP 8.3 and mysqli extension pre-installed
     - Set up MySQL database
     - Import all database schemas
     - Configure port forwarding
-3.  **Start the Application**:
+3.  **Wait for setup to complete** - You'll see "✅ Database setup complete!" message
+4.  **Start the Application**:
     ```bash
     php -S 0.0.0.0:8000
     ```
-4.  **Access Your Application**: Codespaces will forward port 8000 and provide a public URL (e.g., `https://username-repo-xxxxx.github.dev`)
-5.  **Make Port Public** (Optional): In the Ports panel, right-click port 8000 and select "Port Visibility" → "Public" to share with others
+5.  **Access Your Application**: Codespaces will forward port 8000 and provide a public URL (e.g., `https://username-repo-xxxxx.github.dev`)
+6.  **Make Port Public** (Optional): In the Ports panel, right-click port 8000 and select "Port Visibility" → "Public" to share with others
+
+**Important**: If you're getting "mysqli not found" error:
+- You need to **rebuild the container** for the new Dockerfile to take effect
+- Click on the "Dev Container" icon in the bottom-left corner
+- Select "Rebuild Container" from the menu
+- Wait for the rebuild to complete
 
 **Manual Setup (if automatic setup fails):**
 1.  **Install PHP mysqli extension**:
@@ -100,13 +107,14 @@ GitHub Codespaces provides a complete development environment with PHP and MySQL
     sudo apt-get install -y php8.3-mysqli php8.3-mysql
     sudo phpenmod mysqli
     ```
-2.  **Start MySQL Service**:
+2.  **Restart PHP-FPM or your terminal** to load the extension
+3.  **Start MySQL Service**:
     ```bash
     sudo systemctl start mysql
     sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '';"
     sudo mysql -e "FLUSH PRIVILEGES;"
     ```
-3.  **Create and Import Database**:
+4.  **Create and Import Database**:
     ```bash
     mysql -u root -e "CREATE DATABASE IF NOT EXISTS MUSEUM_DATABASE;"
     mysql -u root MUSEUM_DATABASE < museum_database.sql
@@ -114,7 +122,7 @@ GitHub Codespaces provides a complete development environment with PHP and MySQL
     mysql -u root MUSEUM_DATABASE < update_users_role.sql
     mysql -u root MUSEUM_DATABASE < create_bookings_table.sql
     ```
-4.  **Start the Application**:
+5.  **Start the Application**:
     ```bash
     php -S 0.0.0.0:8000
     ```
