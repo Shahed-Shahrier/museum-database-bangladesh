@@ -3,6 +3,12 @@
 
 echo "Setting up Museum Database application..."
 
+# Install PHP mysqli extension
+echo "Installing PHP extensions..."
+sudo apt-get update
+sudo apt-get install -y php8.3-mysqli php8.3-mysql
+sudo phpenmod mysqli
+
 # Start MySQL service
 sudo systemctl start mysql
 sleep 2
@@ -22,4 +28,4 @@ mysql -u root MUSEUM_DATABASE < update_users_role.sql
 mysql -u root MUSEUM_DATABASE < create_bookings_table.sql
 
 echo "Database setup complete!"
-echo "To start the application, run: php -c php-custom.ini -S 0.0.0.0:8000"
+echo "To start the application, run: php -S 0.0.0.0:8000"

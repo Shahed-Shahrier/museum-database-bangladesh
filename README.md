@@ -79,16 +79,36 @@ Place the project folder in `htdocs` and start Apache and MySQL via the XAMPP Co
 ### 4. Hosting in GitHub Codespaces
 GitHub Codespaces provides a complete development environment with PHP and MySQL pre-configured:
 
+**Automatic Setup (Recommended):**
 1.  **Open in Codespaces**: Click "Code" → "Create codespace on main" in your GitHub repository
+2.  The `.devcontainer` configuration will automatically:
+    - Install PHP 8.3 with mysqli extension
+    - Set up MySQL database
+    - Import all database schemas
+    - Configure port forwarding
+3.  **Start the Application**:
+    ```bash
+    php -S 0.0.0.0:8000
+    ```
+4.  **Access Your Application**: Codespaces will forward port 8000 and provide a public URL (e.g., `https://username-repo-xxxxx.github.dev`)
+5.  **Make Port Public** (Optional): In the Ports panel, right-click port 8000 and select "Port Visibility" → "Public" to share with others
+
+**Manual Setup (if automatic setup fails):**
+1.  **Install PHP mysqli extension**:
+    ```bash
+    sudo apt-get update
+    sudo apt-get install -y php8.3-mysqli php8.3-mysql
+    sudo phpenmod mysqli
+    ```
 2.  **Start MySQL Service**:
     ```bash
     sudo systemctl start mysql
-    sudo mysql -e "CREATE DATABASE IF NOT EXISTS MUSEUM_DATABASE;"
     sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '';"
     sudo mysql -e "FLUSH PRIVILEGES;"
     ```
-3.  **Import Database Schema**:
+3.  **Create and Import Database**:
     ```bash
+    mysql -u root -e "CREATE DATABASE IF NOT EXISTS MUSEUM_DATABASE;"
     mysql -u root MUSEUM_DATABASE < museum_database.sql
     mysql -u root MUSEUM_DATABASE < update_tickets_event.sql
     mysql -u root MUSEUM_DATABASE < update_users_role.sql
@@ -96,10 +116,8 @@ GitHub Codespaces provides a complete development environment with PHP and MySQL
     ```
 4.  **Start the Application**:
     ```bash
-    php -c php-custom.ini -S 0.0.0.0:8000
+    php -S 0.0.0.0:8000
     ```
-5.  **Access Your Application**: Codespaces will forward port 8000 and provide a public URL (e.g., `https://username-repo-xxxxx.github.dev`)
-6.  **Make Port Public** (Optional): In the Ports panel, right-click port 8000 and select "Port Visibility" → "Public" to share with others
 
 **Note**: GitHub Codespaces is a development environment, not permanent hosting. For production use, deploy to a VPS, shared hosting, or PaaS platform.
 
