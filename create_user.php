@@ -18,14 +18,14 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
   elseif($role === 'museum_admin' && !$museum_id){ $err='Museum selection is required for Museum Admin.'; }
   else{
     $hash=password_hash($password,PASSWORD_DEFAULT);
-    $st=$conn->prepare('INSERT INTO Users (Username, PasswordHash, Role, Museum_ID) VALUES (?,?,?,?)');
+    $st=$conn->prepare('INSERT INTO users (Username, PasswordHash, Role, Museum_ID) VALUES (?,?,?,?)');
     $st->bind_param('sssi',$username,$hash,$role,$museum_id);
     if(!$st->execute()) $err='Create failed: '.$st->error; else $msg='User created ✔ — Username: '.htmlspecialchars($username).' Role: '.htmlspecialchars($role);
   }
 }
 
 // Fetch museums for dropdown
-$museums_res = $conn->query("SELECT Museum_ID, Name FROM Museum ORDER BY Name");
+$museums_res = $conn->query("SELECT Museum_ID, Name FROM museum ORDER BY Name");
 $museums = [];
 while($m = $museums_res->fetch_assoc()) { $museums[] = $m; }
 ?><?php include 'header.php'; ?>

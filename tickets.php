@@ -1,6 +1,6 @@
 <?php include "config.php"; include "auth.php"; require_admin(); include "header.php"; ?>
 <div class="card"><h2>Tickets</h2>
-<?php if(isset($_POST['delete']) && isset($_POST['Serial'])){ $id=$_POST['Serial']; $st=$conn->prepare('DELETE FROM Tickets WHERE Serial=?'); $st->bind_param('i',$id); if(!$st->execute()) echo '<div class="alert">Delete failed: '.h($st->error).'</div>'; else echo '<div class="alert">Deleted ✔</div>'; } ?>
+<?php if(isset($_POST['delete']) && isset($_POST['Serial'])){ $id=$_POST['Serial']; $st=$conn->prepare('DELETE FROM tickets WHERE Serial=?'); $st->bind_param('i',$id); if(!$st->execute()) echo '<div class="alert">Delete failed: '.h($st->error).'</div>'; else echo '<div class="alert">Deleted ✔</div>'; } ?>
 <?php if(isset($_POST['save'])){ $is_edit=($_POST['is_edit']=='1');
 $Type=$_POST['Type'];
 $Price=$_POST['Price'];
@@ -8,21 +8,21 @@ $Museum_ID=$_POST['Museum_ID'];
 $Event_ID = !empty($_POST['Event_ID']) ? $_POST['Event_ID'] : null;
 
 if($is_edit){ 
-    $st=$conn->prepare('UPDATE Tickets SET `Type`=?, `Price`=?, `Museum_ID`=?, `Event_ID`=? WHERE Serial=?'); 
+    $st=$conn->prepare('UPDATE tickets SET `Type`=?, `Price`=?, `Museum_ID`=?, `Event_ID`=? WHERE Serial=?'); 
     $st->bind_param('sdiii',$Type,$Price,$Museum_ID,$Event_ID,$_POST['Serial']); 
 } else { 
-    $st=$conn->prepare('INSERT INTO Tickets (`Type`, `Price`, `Museum_ID`, `Event_ID`) VALUES (?, ?, ?, ?)'); 
+    $st=$conn->prepare('INSERT INTO tickets (`Type`, `Price`, `Museum_ID`, `Event_ID`) VALUES (?, ?, ?, ?)'); 
     $st->bind_param('sdii',$Type,$Price,$Museum_ID,$Event_ID); 
 } 
 if(!$st->execute()) echo '<div class="alert">Save failed: '.h($st->error).'</div>'; else echo '<div class="alert">Saved ✔</div>'; } ?>
-<?php $edit=null; if(isset($_GET['edit'])){ $id=intval($_GET['edit']); $rs=$conn->prepare('SELECT Serial, `Type`, Price, Museum_ID, Event_ID FROM Tickets WHERE Serial=?'); $rs->bind_param('i',$id); $rs->execute(); $row=$rs->get_result()->fetch_assoc(); if($row){ $edit=$row; } } 
+<?php $edit=null; if(isset($_GET['edit'])){ $id=intval($_GET['edit']); $rs=$conn->prepare('SELECT Serial, `Type`, Price, Museum_ID, Event_ID FROM tickets WHERE Serial=?'); $rs->bind_param('i',$id); $rs->execute(); $row=$rs->get_result()->fetch_assoc(); if($row){ $edit=$row; } } 
 // Fetch Museums
-$museums_res = $conn->query("SELECT Museum_ID, Name FROM Museum ORDER BY Name");
+$museums_res = $conn->query("SELECT Museum_ID, Name FROM museum ORDER BY Name");
 $museums = [];
 while($m = $museums_res->fetch_assoc()) { $museums[] = $m; }
 
 // Fetch Events
-$events_res = $conn->query("SELECT Event_ID, Name FROM Events ORDER BY Name");
+$events_res = $conn->query("SELECT Event_ID, Name FROM events ORDER BY Name");
 $events = [];
 while($e = $events_res->fetch_assoc()) { $events[] = $e; }
 ?>
@@ -63,9 +63,9 @@ while($e = $events_res->fetch_assoc()) { $events[] = $e; }
 <div class="card"><h2>All Tickets</h2>
 <?php 
 $sql = "SELECT t.Serial, t.Type, t.Price, m.Name as MuseumName, e.Name as EventName 
-        FROM Tickets t 
-        LEFT JOIN Museum m ON t.Museum_ID = m.Museum_ID
-        LEFT JOIN Events e ON t.Event_ID = e.Event_ID";
+        FROM tickets t 
+        LEFT JOIN museum m ON t.Museum_ID = m.Museum_ID
+        LEFT JOIN events e ON t.Event_ID = e.Event_ID";
 if(isset($_SESSION['admin_museum_id'])){
     $sql .= " WHERE t.Museum_ID = " . intval($_SESSION['admin_museum_id']);
 }

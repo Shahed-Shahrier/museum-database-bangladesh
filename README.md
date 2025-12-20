@@ -54,7 +54,8 @@ The system uses a relational database with the following key tables:
     ```bash
     sudo mysql -e "CREATE DATABASE IF NOT EXISTS MUSEUM_DATABASE;"
     sudo mysql MUSEUM_DATABASE < museum_database.sql
-    sudo mysql MUSEUM_DATABASE < update_schema.sql
+    sudo mysql MUSEUM_DATABASE < update_tickets_event.sql
+    sudo mysql MUSEUM_DATABASE < update_users_role.sql
     ```
 
 ### 2. Configuration

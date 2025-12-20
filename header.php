@@ -105,15 +105,26 @@ if(is_super_admin() && isset($_POST['set_admin_museum'])){
   
   /* Standard Tables & Forms */
   .card { background: #fff; padding: 20px; border-radius: 8px; box-shadow: var(--card-shadow); margin-bottom: 20px; color: #333; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
   table { width: 100%; border-collapse: collapse; margin-top: 10px; }
   th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
   th { background: #f8f9fa; font-weight: 600; }
   input, select, textarea { width: 100%; padding: 10px; margin: 5px 0 15px; border: 1px solid #ddd; border-radius: 4px; }
-  button { padding: 10px 20px; background: #2563eb; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
+  button, .btn, .btn-primary { padding: 10px 20px; background: #2563eb; color: #fff; border: none; border-radius: 4px; cursor: pointer; text-decoration: none; display: inline-block; }
   .btn-danger { background: #ef4444; }
   .btn-secondary { background: #64748b; text-decoration: none; color: white; display: inline-block; }
+  .btn-sm { padding: 6px 12px; font-size: 0.875rem; }
+  .form-group { margin-bottom: 15px; }
+  .form-group label { display: block; margin-bottom: 5px; font-weight: 500; }
+  .form-control { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; }
+  .mb-4 { margin-bottom: 20px; }
+  .inline { display: inline; }
+  .muted { color: #666; font-size: 0.9em; }
   .alert { padding: 10px; margin-bottom: 15px; border-radius: 4px; background: #d1fae5; color: #065f46; }
   .alert-danger { background: #fee2e2; color: #991b1b; }
+  .alert-success { background: #d1fae5; color: #065f46; }
+  .alert-warning { background: #fef3c7; color: #92400e; }
 </style>
 </head>
 
@@ -175,7 +186,7 @@ if(is_super_admin() && isset($_POST['set_admin_museum'])){
       <select name="admin_museum_id" onchange="this.form.submit()" style="padding:4px; border-radius:4px; border:1px solid #ccc; width:auto; display:inline-block;">
         <option value="all">-- Manage All Museums --</option>
         <?php
-            $m_res = $conn->query("SELECT Museum_ID, Name FROM Museum ORDER BY Name");
+            $m_res = $conn->query("SELECT Museum_ID, Name FROM museum ORDER BY Name");
             while($m = $m_res->fetch_assoc()){
                 $selected = (isset($_SESSION['admin_museum_id']) && $_SESSION['admin_museum_id'] == $m['Museum_ID']) ? 'selected' : '';
                 echo "<option value='{$m['Museum_ID']}' $selected>" . htmlspecialchars($m['Name']) . "</option>";
@@ -188,7 +199,7 @@ if(is_super_admin() && isset($_POST['set_admin_museum'])){
         <?php 
             if(isset($_SESSION['admin_museum_id'])){
                 $mid = intval($_SESSION['admin_museum_id']);
-                $m_res = $conn->query("SELECT Name FROM Museum WHERE Museum_ID = $mid");
+                $m_res = $conn->query("SELECT Name FROM museum WHERE Museum_ID = $mid");
                 if($m = $m_res->fetch_assoc()){
                     echo "<span style='font-weight:bold;'>" . htmlspecialchars($m['Name']) . "</span>";
                 }

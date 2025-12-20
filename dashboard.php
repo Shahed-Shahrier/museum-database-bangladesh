@@ -14,17 +14,17 @@ include "header.php";
     $mid = isset($_SESSION['admin_museum_id']) ? intval($_SESSION['admin_museum_id']) : null;
 
     $items = [
-      ["Museums", "SELECT COUNT(*) c FROM Museum" . ($mid ? " WHERE Museum_ID=$mid" : "")],
-      ["Events", "SELECT COUNT(DISTINCT e.Event_ID) c FROM Events e JOIN Museum_Event me ON e.Event_ID=me.Event_ID" . ($mid ? " WHERE me.Museum_ID=$mid" : "")],
-      ["Galleries", "SELECT COUNT(*) c FROM Gallery" . ($mid ? " WHERE Museum_ID=$mid" : "")],
-      ["Artists", "SELECT COUNT(*) c FROM Artist" . ($mid ? " WHERE Museum_ID=$mid" : "")],
-      ["Art Pieces", "SELECT COUNT(*) c FROM Art_Piece ap JOIN Gallery g ON ap.Gallery_ID=g.Gallery_ID" . ($mid ? " WHERE g.Museum_ID=$mid" : "")],
-      ["Tickets", "SELECT COUNT(*) c FROM Tickets" . ($mid ? " WHERE Museum_ID=$mid" : "")],
+      ["Museums", "SELECT COUNT(*) c FROM museum" . ($mid ? " WHERE Museum_ID=$mid" : "")],
+      ["Events", "SELECT COUNT(DISTINCT e.Event_ID) c FROM events e JOIN museum_event me ON e.Event_ID=me.Event_ID" . ($mid ? " WHERE me.Museum_ID=$mid" : "")],
+      ["Galleries", "SELECT COUNT(*) c FROM gallery" . ($mid ? " WHERE Museum_ID=$mid" : "")],
+      ["Artists", "SELECT COUNT(*) c FROM artist" . ($mid ? " WHERE Museum_ID=$mid" : "")],
+      ["Art Pieces", "SELECT COUNT(*) c FROM art_piece ap JOIN gallery g ON ap.Gallery_ID=g.Gallery_ID" . ($mid ? " WHERE g.Museum_ID=$mid" : "")],
+      ["Tickets", "SELECT COUNT(*) c FROM tickets" . ($mid ? " WHERE Museum_ID=$mid" : "")],
       ["Visitors", "SELECT COUNT(*) c FROM bookings b JOIN tickets t ON b.Ticket_Serial=t.Serial" . ($mid ? " WHERE t.Museum_ID=$mid" : "")],
     ];
     
     if(!$mid){
-        $items[] = ["Users", "SELECT COUNT(*) c FROM Users"];
+        $items[] = ["Users", "SELECT COUNT(*) c FROM users"];
     }
 
     foreach ($items as $item) {
