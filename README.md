@@ -56,6 +56,7 @@ The system uses a relational database with the following key tables:
     sudo mysql MUSEUM_DATABASE < museum_database.sql
     sudo mysql MUSEUM_DATABASE < update_tickets_event.sql
     sudo mysql MUSEUM_DATABASE < update_users_role.sql
+    sudo mysql MUSEUM_DATABASE < create_bookings_table.sql
     ```
 
 ### 2. Configuration
@@ -75,9 +76,44 @@ php -c php-custom.ini -S 0.0.0.0:8000
 **On XAMPP (Windows):**
 Place the project folder in `htdocs` and start Apache and MySQL via the XAMPP Control Panel. Access via `http://localhost/your-folder-name`.
 
+## Deployment for Online Hosting
+
+### Environment Variables (Recommended for Production)
+For security and flexibility, `config.php` supports environment variables for database configuration:
+
+*   `DB_HOST`: Database host (default: `localhost`)
+*   `DB_USER`: Database username (default: `root`)
+*   `DB_PASS`: Database password (default: empty)
+*   `DB_NAME`: Database name (default: `MUSEUM_DATABASE`)
+
+### Production Considerations
+1.  **Security**:
+    *   Set `display_errors = Off` in production PHP configuration
+    *   Use strong database passwords
+    *   Set environment variables instead of using defaults
+    *   Enable HTTPS for secure connections
+    *   Review and harden file permissions
+
+2.  **Database**:
+    *   Use lowercase table names (already implemented)
+    *   Ensure MySQL/MariaDB is configured for case-insensitive table names on Linux if needed
+    *   Regular backups of the database
+    *   Apply all schema updates: `museum_database.sql`, `update_tickets_event.sql`, `update_users_role.sql`, `create_bookings_table.sql`
+
+3.  **Web Server**:
+    *   Configure appropriate PHP-FPM/Apache settings
+    *   Set up virtual hosts correctly
+    *   Enable necessary PHP extensions: `mysqli`, `pdo_mysql`
+
+### Hosting Platforms
+This application can be deployed on:
+*   **Shared Hosting**: Upload files via FTP, import database via phpMyAdmin
+*   **VPS/Cloud**: Ubuntu/Debian with Apache/Nginx + PHP 8.0+ + MySQL/MariaDB
+*   **PaaS**: Heroku, Railway, Google Cloud, AWS (configure environment variables)
+
 ## File Structure
 *   `index.php`: Homepage.
-*   `config.php`: Database connection settings.
+*   `config.php`: Database connection settings with environment variable support.
 *   `auth.php`: Authentication helper functions.
 *   `header.php` / `footer.php`: Reusable UI components.
 *   **Content Pages**: `museums.php`, `events.php`, `art_pieces.php`, `artists.php`, `galleries.php`.
