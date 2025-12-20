@@ -76,6 +76,33 @@ php -c php-custom.ini -S 0.0.0.0:8000
 **On XAMPP (Windows):**
 Place the project folder in `htdocs` and start Apache and MySQL via the XAMPP Control Panel. Access via `http://localhost/your-folder-name`.
 
+### 4. Hosting in GitHub Codespaces
+GitHub Codespaces provides a complete development environment with PHP and MySQL pre-configured:
+
+1.  **Open in Codespaces**: Click "Code" → "Create codespace on main" in your GitHub repository
+2.  **Start MySQL Service**:
+    ```bash
+    sudo systemctl start mysql
+    sudo mysql -e "CREATE DATABASE IF NOT EXISTS MUSEUM_DATABASE;"
+    sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '';"
+    sudo mysql -e "FLUSH PRIVILEGES;"
+    ```
+3.  **Import Database Schema**:
+    ```bash
+    mysql -u root MUSEUM_DATABASE < museum_database.sql
+    mysql -u root MUSEUM_DATABASE < update_tickets_event.sql
+    mysql -u root MUSEUM_DATABASE < update_users_role.sql
+    mysql -u root MUSEUM_DATABASE < create_bookings_table.sql
+    ```
+4.  **Start the Application**:
+    ```bash
+    php -c php-custom.ini -S 0.0.0.0:8000
+    ```
+5.  **Access Your Application**: Codespaces will forward port 8000 and provide a public URL (e.g., `https://username-repo-xxxxx.github.dev`)
+6.  **Make Port Public** (Optional): In the Ports panel, right-click port 8000 and select "Port Visibility" → "Public" to share with others
+
+**Note**: GitHub Codespaces is a development environment, not permanent hosting. For production use, deploy to a VPS, shared hosting, or PaaS platform.
+
 ## Deployment for Online Hosting
 
 ### Environment Variables (Recommended for Production)
@@ -107,8 +134,9 @@ For security and flexibility, `config.php` supports environment variables for da
 
 ### Hosting Platforms
 This application can be deployed on:
-*   **Shared Hosting**: Upload files via FTP, import database via phpMyAdmin
-*   **VPS/Cloud**: Ubuntu/Debian with Apache/Nginx + PHP 8.0+ + MySQL/MariaDB
+*   **GitHub Codespaces**: Development environment with port forwarding (not for production)
+*   **Shared Hosting**: Upload files via FTP, import database via phpMyAdmin (e.g., InfinityFree, 000webhost)
+*   **VPS/Cloud**: Ubuntu/Debian with Apache/Nginx + PHP 8.0+ + MySQL/MariaDB (e.g., DigitalOcean, Linode)
 *   **PaaS**: Heroku, Railway, Google Cloud, AWS (configure environment variables)
 
 ## File Structure
