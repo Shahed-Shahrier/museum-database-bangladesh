@@ -1,7 +1,10 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+$APP_ENV = getenv('APP_ENV') ?: 'development';
+$isProduction = $APP_ENV === 'production';
+
+ini_set('display_errors', $isProduction ? '0' : '1');
+ini_set('display_startup_errors', $isProduction ? '0' : '1');
+error_reporting($isProduction ? E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT : E_ALL);
 
 // Database configuration with environment variable support
 $DB_HOST = getenv('DB_HOST') ?: 'localhost';

@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: museum_web
+    ports:
+      - "8080:80"
+    environment:
+      APP_ENV: production
+      DB_HOST: db
+      DB_USER: museum_user
+      DB_PASS: museum_password
+      DB_NAME: MUSEUM_DATABASE
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  db:
+    image: mariadb:11
+    container_name: museum_db
+    environment:
+      MARIADB_ROOT_PASSWORD: root_password
+      MARIADB_DATABASE: MUSEUM_DATABASE
+      MARIADB_USER: museum_user
+      MARIADB_PASSWORD: museum_password
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./museum_database.sql:/docker-entrypoint-initdb.d/01_museum_database.sql:ro
+      - ./update_tickets_event.sql:/docker-entrypoint-initdb.d/02_update_tickets_event.sql:ro
+      - ./update_users_role.sql:/docker-entrypoint-initdb.d/03_update_users_role.sql:ro
+      - ./create_bookings_table.sql:/docker-entrypoint-initdb.d/04_create_bookings_table.sql:ro
+    restart: unless-stopped
+
+volumes:
+  db_data:

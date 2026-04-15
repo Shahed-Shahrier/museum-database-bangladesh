@@ -44,6 +44,28 @@ The system uses a relational database with the following key tables:
 
 ## Installation & Setup
 
+## GitHub Deployment Path
+
+This project is PHP + MySQL, so it cannot be hosted on GitHub Pages.
+
+The repository now includes GitHub-native deployment automation:
+
+1. CI workflow: `.github/workflows/ci.yml`
+   - Runs PHP lint checks on push and pull request.
+2. Deployment workflow: `.github/workflows/deploy-ghcr.yml`
+   - Builds the app container from `Dockerfile`.
+   - Publishes image tags to GitHub Container Registry (`ghcr.io`).
+
+How to use it:
+
+1. Push to `main` (or run workflow manually from Actions tab).
+2. Open the Actions tab and verify both workflows are green.
+3. Pull and run the published image from `ghcr.io/<owner>/<repo>` on your hosting platform.
+
+Notes:
+- Database schema files are included for first-time initialization.
+- For production, change default DB credentials and set environment variables.
+
 ### Prerequisites
 *   PHP 8.0 or higher.
 *   MySQL or MariaDB server.
