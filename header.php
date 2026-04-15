@@ -20,6 +20,8 @@ if(is_super_admin() && isset($_POST['set_admin_museum'])){
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Museum DB - Local Frontend</title>
+<link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+<link rel="apple-touch-icon" href="assets/logo.svg">
 <style>
   :root{ 
     --bg:#f0f2f5; 
@@ -45,6 +47,10 @@ if(is_super_admin() && isset($_POST['set_admin_museum'])){
   }
   header h1{ margin:0; font-size:32px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
   header p { margin: 10px 0 0; font-size: 16px; opacity: 0.9; }
+
+  .brand-mark { display:inline-flex; align-items:center; gap:14px; margin-bottom: 14px; }
+  .brand-mark img { width: 64px; height: 64px; display:block; }
+  .brand-mark span { font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; font-size: 0.85rem; opacity: 0.95; }
   
   /* Search Bar in Header */
   .search-container { margin-top: 20px; display: flex; justify-content: center; gap: 10px; }
@@ -144,6 +150,10 @@ if(is_super_admin() && isset($_POST['set_admin_museum'])){
     </div>
 
     <header>
+      <div class="brand-mark" aria-label="Museum Database logo">
+        <img src="assets/logo.svg" alt="Museum Database logo">
+        <span>Museum Database Bangladesh</span>
+      </div>
       <h1>Integrated Museum Service Platform</h1>
       <p>Welcome to the one-stop service delivery platform for all museums.</p>
       
