@@ -1,9 +1,11 @@
--- Create users/roles table
-USE MUSEUM_DATABASE;
-CREATE TABLE IF NOT EXISTS Users (
-  User_ID INT AUTO_INCREMENT PRIMARY KEY,
-  Username VARCHAR(100) NOT NULL UNIQUE,
-  PasswordHash VARCHAR(255) NOT NULL,
-  Role ENUM('admin','guest') NOT NULL DEFAULT 'guest',
-  Created_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB;
+-- NOTE: The users table is already created in museum_database.sql
+-- This file is kept for backward compatibility but is not needed for setup.
+-- The users table structure is:
+--   User_ID INT AUTO_INCREMENT PRIMARY KEY
+--   Username VARCHAR(100) NOT NULL UNIQUE
+--   PasswordHash VARCHAR(255) NOT NULL
+--   Role ENUM('admin','guest','museum_admin') NOT NULL DEFAULT 'guest'
+--   Created_At TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+--   Museum_ID INT NULL (added via update_users_role.sql)
+
+-- No action required - users table exists in main schema

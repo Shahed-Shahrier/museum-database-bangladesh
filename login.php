@@ -3,7 +3,7 @@ $err=""; if($_SERVER['REQUEST_METHOD']==='POST'){
   $username=trim($_POST['username']??''); $password=$_POST['password']??'';
   if($username===''||$password===''){ $err='Username and password are required.'; }
   else{
-    $st=$conn->prepare('SELECT User_ID, Username, PasswordHash, Role, Museum_ID FROM Users WHERE Username=?');
+    $st=$conn->prepare('SELECT User_ID, Username, PasswordHash, Role, Museum_ID FROM users WHERE Username=?');
     $st->bind_param('s',$username); $st->execute(); $res=$st->get_result();
     if($row=$res->fetch_assoc()){ 
         if(password_verify($password,$row['PasswordHash'])){ 

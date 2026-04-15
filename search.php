@@ -17,25 +17,25 @@ $q = isset($_GET['q']) ? trim($_GET['q']) : '';
         $term = "%" . $q . "%";
         
         // 1. Search Museums
-        $stmt = $conn->prepare("SELECT * FROM Museum WHERE Name LIKE ? OR City LIKE ? OR Type LIKE ?");
+        $stmt = $conn->prepare("SELECT * FROM museum WHERE Name LIKE ? OR City LIKE ? OR Type LIKE ?");
         $stmt->bind_param('sss', $term, $term, $term);
         $stmt->execute();
         $res_museum = $stmt->get_result();
         
         // 2. Search Events
-        $stmt = $conn->prepare("SELECT * FROM Events WHERE Name LIKE ? OR Description LIKE ?");
+        $stmt = $conn->prepare("SELECT * FROM events WHERE Name LIKE ? OR Description LIKE ?");
         $stmt->bind_param('ss', $term, $term);
         $stmt->execute();
         $res_event = $stmt->get_result();
         
         // 3. Search Artists
-        $stmt = $conn->prepare("SELECT * FROM Artist WHERE Name LIKE ? OR Description LIKE ?");
+        $stmt = $conn->prepare("SELECT * FROM artist WHERE Name LIKE ? OR Description LIKE ?");
         $stmt->bind_param('ss', $term, $term);
         $stmt->execute();
         $res_artist = $stmt->get_result();
         
         // 4. Search Art Pieces
-        $stmt = $conn->prepare("SELECT * FROM Art_Piece WHERE Title LIKE ? OR Medium LIKE ?");
+        $stmt = $conn->prepare("SELECT * FROM art_piece WHERE Title LIKE ? OR Medium LIKE ?");
         $stmt->bind_param('ss', $term, $term);
         $stmt->execute();
         $res_art = $stmt->get_result();

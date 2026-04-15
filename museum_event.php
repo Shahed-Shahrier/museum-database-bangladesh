@@ -2,8 +2,8 @@
 <div class="card"><h2>Link Museums ↔ Events</h2><p class="muted">Create or remove collaborations between museums and events.</p>
 <?php
 if(isset($_POST['link'])){ $museum_id=intval($_POST['Museum_ID']); $event_id=intval($_POST['Event_ID']); $st=$conn->prepare("INSERT IGNORE INTO Museum_Event (Museum_ID, Event_ID) VALUES (?,?)"); $st->bind_param("ii",$museum_id,$event_id); if(!$st->execute()) echo '<div class="alert">Link failed: '.h($st->error).'</div>'; else echo '<div class="alert">Linked ✔</div>'; }
-if(isset($_POST['unlink'])){ $museum_id=intval($_POST['Museum_ID']); $event_id=intval($_POST['Event_ID']); $st=$conn->prepare("DELETE FROM Museum_Event WHERE Museum_ID=? AND Event_ID=?"); $st->bind_param("ii",$museum_id,$event_id); if(!$st->execute()) echo '<div class="alert">Unlink failed: '.h($st->error).'</div>'; else echo '<div class="alert">Unlinked ✔</div>'; }
-$museums=$conn->query("SELECT Museum_ID, Name FROM Museum ORDER BY Name"); $events=$conn->query("SELECT Event_ID, Name FROM Events ORDER BY Name");
+if(isset($_POST['unlink'])){ $museum_id=intval($_POST['Museum_ID']); $event_id=intval($_POST['Event_ID']); $st=$conn->prepare("DELETE FROM museum_event WHERE Museum_ID=? AND Event_ID=?"); $st->bind_param("ii",$museum_id,$event_id); if(!$st->execute()) echo '<div class="alert">Unlink failed: '.h($st->error).'</div>'; else echo '<div class="alert">Unlinked ✔</div>'; }
+$museums=$conn->query("SELECT Museum_ID, Name FROM museum ORDER BY Name"); $events=$conn->query("SELECT Event_ID, Name FROM events ORDER BY Name");
 ?>
 <form class="inline" method="post">
   <select name="Museum_ID" required><option value="">Select Museum</option>
@@ -14,7 +14,7 @@ $museums=$conn->query("SELECT Museum_ID, Name FROM Museum ORDER BY Name"); $even
 </form></div>
 <div class="card"><h2>Current Collaborations</h2>
 <?php
-$sql="SELECT me.Museum_ID, m.Name AS Museum, me.Event_ID, e.Name AS EventName, e.Date FROM Museum_Event me JOIN Museum m ON me.Museum_ID=m.Museum_ID JOIN Events e ON me.Event_ID=e.Event_ID ORDER BY e.Date DESC, m.Name ASC";
+$sql="SELECT me.Museum_ID, m.Name AS Museum, me.Event_ID, e.Name AS EventName, e.Date FROM museum_event me JOIN museum m ON me.Museum_ID=m.Museum_ID JOIN events e ON me.Event_ID=e.Event_ID ORDER BY e.Date DESC, m.Name ASC";
 $res=$conn->query($sql);
 if($res && $res->num_rows){ echo "<table><tr><th>Museum</th><th>Event</th><th>Date</th><th>Actions</th></tr>";
 while($row=$res->fetch_assoc()){

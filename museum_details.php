@@ -12,7 +12,7 @@ if ($id <= 0) {
 }
 
 // Fetch Museum Details
-$stmt = $conn->prepare("SELECT * FROM Museum WHERE Museum_ID = ?");
+$stmt = $conn->prepare("SELECT * FROM museum WHERE Museum_ID = ?");
 $stmt->bind_param("i", $id);
 $stmt->execute();
 $museum = $stmt->get_result()->fetch_assoc();
@@ -24,13 +24,13 @@ if (!$museum) {
 }
 
 // Fetch Galleries
-$stmt = $conn->prepare("SELECT * FROM Gallery WHERE Museum_ID = ?");
+$stmt = $conn->prepare("SELECT * FROM gallery WHERE Museum_ID = ?");
 $stmt->bind_param("i", $id);
 $stmt->execute();
 $galleries = $stmt->get_result();
 
 // Fetch Artists
-$stmt = $conn->prepare("SELECT * FROM Artist WHERE Museum_ID = ?");
+$stmt = $conn->prepare("SELECT * FROM artist WHERE Museum_ID = ?");
 $stmt->bind_param("i", $id);
 $stmt->execute();
 $artists = $stmt->get_result();
@@ -38,8 +38,8 @@ $artists = $stmt->get_result();
 // Fetch Art Pieces (via Gallery)
 $stmt = $conn->prepare("
     SELECT a.*, g.Name as GalleryName 
-    FROM Art_Piece a 
-    JOIN Gallery g ON a.Gallery_ID = g.Gallery_ID 
+    FROM art_piece a 
+    JOIN gallery g ON a.Gallery_ID = g.Gallery_ID 
     WHERE g.Museum_ID = ?
 ");
 $stmt->bind_param("i", $id);
@@ -49,7 +49,7 @@ $art_pieces = $stmt->get_result();
 // Fetch Events
 $stmt = $conn->prepare("
     SELECT e.* 
-    FROM Events e 
+    FROM events e 
     JOIN museum_event me ON e.Event_ID = me.Event_ID 
     WHERE me.Museum_ID = ?
 ");

@@ -1,6 +1,6 @@
 <?php include "config.php"; include "auth.php"; include "header.php"; ?>
 <div class="card"><h2>Artists</h2>
-<?php if(is_admin() && isset($_POST['delete']) && isset($_POST['Artist_ID'])){ $id=$_POST['Artist_ID']; $st=$conn->prepare('DELETE FROM Artist WHERE Artist_ID=?'); $st->bind_param('i',$id); if(!$st->execute()) echo '<div class="alert">Delete failed: '.h($st->error).'</div>'; else echo '<div class="alert">Deleted ✔</div>'; } ?>
+<?php if(is_admin() && isset($_POST['delete']) && isset($_POST['Artist_ID'])){ $id=$_POST['Artist_ID']; $st=$conn->prepare('DELETE FROM artist WHERE Artist_ID=?'); $st->bind_param('i',$id); if(!$st->execute()) echo '<div class="alert">Delete failed: '.h($st->error).'</div>'; else echo '<div class="alert">Deleted ✔</div>'; } ?>
 <?php if(is_admin() && isset($_POST['save'])){ $is_edit=($_POST['is_edit']=='1');
 $Name=$_POST['Name'];
 $Description=$_POST['Description'];
@@ -11,12 +11,12 @@ if(isset($_SESSION['admin_museum_id'])){
     $Museum_ID = $_SESSION['admin_museum_id'];
 }
 
-if($is_edit){ $st=$conn->prepare('UPDATE Artist SET `Name`=?, `Description`=?, `Museum_ID`=? WHERE Artist_ID=?'); $st->bind_param('ssii',$Name,$Description,$Museum_ID,$_POST['Artist_ID']); } else { $st=$conn->prepare('INSERT INTO Artist (`Name`, `Description`, `Museum_ID`) VALUES (?, ?, ?)'); $st->bind_param('ssi',$Name,$Description,$Museum_ID); } if(!$st->execute()) echo '<div class="alert">Save failed: '.h($st->error).'</div>'; else echo '<div class="alert">Saved ✔</div>'; } ?>
+if($is_edit){ $st=$conn->prepare('UPDATE artist SET `Name`=?, `Description`=?, `Museum_ID`=? WHERE Artist_ID=?'); $st->bind_param('ssii',$Name,$Description,$Museum_ID,$_POST['Artist_ID']); } else { $st=$conn->prepare('INSERT INTO artist (`Name`, `Description`, `Museum_ID`) VALUES (?, ?, ?)'); $st->bind_param('ssi',$Name,$Description,$Museum_ID); } if(!$st->execute()) echo '<div class="alert">Save failed: '.h($st->error).'</div>'; else echo '<div class="alert">Saved ✔</div>'; } ?>
 <?php 
 $edit=null; 
 if(is_admin() && isset($_GET['edit'])){ 
     $id=intval($_GET['edit']); 
-    $rs=$conn->prepare('SELECT Artist_ID, Name, Description, Museum_ID FROM Artist WHERE Artist_ID=?'); 
+    $rs=$conn->prepare('SELECT Artist_ID, Name, Description, Museum_ID FROM artist WHERE Artist_ID=?'); 
     $rs->bind_param('i',$id); 
     $rs->execute(); 
     $row=$rs->get_result()->fetch_assoc(); 
@@ -24,7 +24,7 @@ if(is_admin() && isset($_GET['edit'])){
 } 
 
 // Fetch museums for dropdown
-$museums_res = $conn->query("SELECT Museum_ID, Name FROM Museum ORDER BY Name");
+$museums_res = $conn->query("SELECT Museum_ID, Name FROM museum ORDER BY Name");
 $museums = [];
 while($m = $museums_res->fetch_assoc()) { $museums[] = $m; }
 ?>
@@ -61,7 +61,7 @@ while($m = $museums_res->fetch_assoc()) { $museums[] = $m; }
     <h2>All Artists</h2>
     <div class="grid">
         <?php 
-        $sql = "SELECT a.Artist_ID, a.Name, a.Description, a.Museum_ID, m.Name as MuseumName FROM Artist a LEFT JOIN Museum m ON a.Museum_ID = m.Museum_ID";
+        $sql = "SELECT a.Artist_ID, a.Name, a.Description, a.Museum_ID, m.Name as MuseumName FROM artist a LEFT JOIN museum m ON a.Museum_ID = m.Museum_ID";
         if(isset($_SESSION['admin_museum_id'])){
             $sql .= " WHERE a.Museum_ID = " . intval($_SESSION['admin_museum_id']);
         }
