@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Unified Museum Database for Bangladesh - project information and deployment links." />
+  <title>Museum Database Bangladesh</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --surface: #111827;
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --border: #1f2937;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: linear-gradient(180deg, #0b1220, var(--bg));
+      color: var(--text);
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem 1rem 3rem;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.25rem;
+      margin-top: 1rem;
+    }
+    h1, h2 { margin: 0 0 0.6rem; }
+    p { color: var(--muted); line-height: 1.6; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    ul { margin: 0.5rem 0 0; padding-left: 1.1rem; }
+    li { margin: 0.35rem 0; color: var(--muted); }
+    .badge {
+      display: inline-block;
+      border: 1px solid #0ea5e9;
+      color: #7dd3fc;
+      border-radius: 999px;
+      padding: 0.25rem 0.6rem;
+      font-size: 0.8rem;
+      margin-bottom: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <span class="badge">GitHub Pages</span>
+    <h1>Unified Museum Database for Bangladesh</h1>
+    <p>
+      This repository includes a PHP + MySQL web application. GitHub Pages can host only static files,
+      so this page is the project landing page. The full application is deployed using container/server workflows.
+    </p>
+
+    <section class="card">
+      <h2>Repository</h2>
+      <p><a href="https://github.com/Shahed-Shahrier/museum-database-bangladesh">github.com/Shahed-Shahrier/museum-database-bangladesh</a></p>
+    </section>
+
+    <section class="card">
+      <h2>Deployment Notes</h2>
+      <ul>
+        <li>GitHub Pages: static landing page (this site)</li>
+        <li>CI lint workflow: checks PHP syntax</li>
+        <li>GHCR workflow: builds and publishes container image</li>
+        <li>Server deploy workflow: deploys full app via Docker Compose + SQL updates</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>Next Step</h2>
+      <p>
+        Configure repository secrets and run <strong>Deploy To Server</strong> from GitHub Actions to publish the full app online.
+      </p>
+    </section>
+  </main>
+</body>
+</html>
