@@ -225,10 +225,13 @@ CREATE TABLE `users` (
   `User_ID` int(11) NOT NULL AUTO_INCREMENT,
   `Username` varchar(100) NOT NULL,
   `PasswordHash` varchar(255) NOT NULL,
-  `Role` enum('admin','guest') NOT NULL DEFAULT 'guest',
+  `Role` enum('admin','guest','museum_admin') NOT NULL DEFAULT 'guest',
+  `Museum_ID` int(11) DEFAULT NULL,
   `Created_At` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`User_ID`),
-  UNIQUE KEY `Username` (`Username`)
+  UNIQUE KEY `Username` (`Username`),
+  KEY `fk_users_museum` (`Museum_ID`),
+  CONSTRAINT `fk_users_museum` FOREIGN KEY (`Museum_ID`) REFERENCES `museum` (`Museum_ID`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -238,7 +241,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (2,'Zero','$2y$10$aniyW.t6Rhphcj5WOzdnFuoUG7jBIsVIhJwFl6ZvGLZ4G306Ar2fe','guest','2025-11-16 18:31:25'),(3,'admin77','$2y$10$uqQNey.YKjzDZf8SLSKuHesrqgUEzti6lzmk8Uk1lQr/gFHaqljxC','admin','2025-11-29 14:30:12'),(4,'Zero1','$2y$10$plscGPTL9L3MsM/xN3jY7OH6XxhBq1nH7sE/o85QrFRF91XMHMKdi','guest','2025-11-29 14:34:46');
+INSERT INTO `users` VALUES (2,'Zero','$2y$10$aniyW.t6Rhphcj5WOzdnFuoUG7jBIsVIhJwFl6ZvGLZ4G306Ar2fe','guest',NULL,'2025-11-16 18:31:25'),(3,'admin77','$2y$10$uqQNey.YKjzDZf8SLSKuHesrqgUEzti6lzmk8Uk1lQr/gFHaqljxC','admin',NULL,'2025-11-29 14:30:12'),(4,'Zero1','$2y$10$plscGPTL9L3MsM/xN3jY7OH6XxhBq1nH7sE/o85QrFRF91XMHMKdi','guest',NULL,'2025-11-29 14:34:46');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 

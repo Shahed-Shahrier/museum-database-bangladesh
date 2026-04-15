@@ -55,16 +55,24 @@ The repository now includes GitHub-native deployment automation:
 2. Deployment workflow: `.github/workflows/deploy-ghcr.yml`
    - Builds the app container from `Dockerfile`.
    - Publishes image tags to GitHub Container Registry (`ghcr.io`).
+3. Server deployment workflow: `.github/workflows/deploy-server.yml`
+    - Manual deploy to your server over SSH.
+    - Runs Docker Compose and applies DB migrations.
 
 How to use it:
 
-1. Push to `main` (or run workflow manually from Actions tab).
-2. Open the Actions tab and verify both workflows are green.
-3. Pull and run the published image from `ghcr.io/<owner>/<repo>` on your hosting platform.
+1. Push to `main` and verify CI plus GHCR image publish workflows are green.
+2. Set repository secrets for server deployment:
+    - `DEPLOY_HOST`
+    - `DEPLOY_USER`
+    - `DEPLOY_SSH_KEY`
+    - `DEPLOY_PATH`
+3. Run `Deploy To Server` manually from the Actions tab.
 
 Notes:
 - Database schema files are included for first-time initialization.
 - For production, change default DB credentials and set environment variables.
+- For Linux servers, table names are case-sensitive; keep all SQL table references lowercase.
 
 ### Prerequisites
 *   PHP 8.0 or higher.

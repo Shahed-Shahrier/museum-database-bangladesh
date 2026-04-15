@@ -10,9 +10,9 @@
         </div>
         <div style="text-align: right;">
             <div style="margin-bottom: 10px;">
-                <a href="#" style="color: #fff; text-decoration: none; margin-left: 15px; font-size: 14px;">Home</a>
-                <a href="#" style="color: #fff; text-decoration: none; margin-left: 15px; font-size: 14px;">Services</a>
-                <a href="#" style="color: #fff; text-decoration: none; margin-left: 15px; font-size: 14px;">Contact</a>
+                <a href="index.php" style="color: #fff; text-decoration: none; margin-left: 15px; font-size: 14px;">Home</a>
+                <a href="museums.php" style="color: #fff; text-decoration: none; margin-left: 15px; font-size: 14px;">Museums</a>
+                <a href="events.php" style="color: #fff; text-decoration: none; margin-left: 15px; font-size: 14px;">Events</a>
             </div>
             <div style="font-size: 12px; opacity: 0.6;">
                 &copy; <?php echo date('Y'); ?> Museum Database System. All rights reserved.

@@ -37,8 +37,7 @@ if(is_super_admin() && isset($_POST['set_admin_museum'])){
 
   /* Hero Header */
   header{ 
-    background: url('https://img.freepik.com/free-vector/gradient-blue-background_23-2149333532.jpg') no-repeat center center/cover, var(--primary-gradient);
-    background-blend-mode: overlay;
+    background: var(--primary-gradient);
     color:#fff; 
     padding: 40px 20px; 
     text-align: center;
@@ -172,6 +171,7 @@ if(is_super_admin() && isset($_POST['set_admin_museum'])){
     <a href="tickets.php">Manage Tickets</a>
     <a href="dashboard.php">Dashboard</a>
     <a href="visitors.php">Visitors</a>
+    <a href="museum_event.php">Museum-Event Links</a>
     <?php if(is_super_admin()): ?>
         <a href="create_user.php">Create User</a>
     <?php endif; ?>

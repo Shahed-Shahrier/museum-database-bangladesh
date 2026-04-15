@@ -1,0 +1,62 @@
+name: Deploy To Server
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate required deployment secrets
+        run: |
+          missing=0
+          for v in DEPLOY_HOST DEPLOY_USER DEPLOY_SSH_KEY DEPLOY_PATH; do
+            if [ -z "${!v}" ]; then
+              echo "Missing secret: $v"
+              missing=1
+            fi
+          done
+          if [ "$missing" -ne 0 ]; then
+            echo "Set required repository secrets before running this workflow."
+            exit 1
+          fi
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+
+      - name: Copy project files to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          source: "."
+          target: ${{ secrets.DEPLOY_PATH }}
+          strip_components: 0
+
+      - name: Deploy containers and run migrations
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: |
+            set -e
+            cd "${{ secrets.DEPLOY_PATH }}"
+
+            docker compose up -d --build
+
+            # Apply schema updates idempotently after containers are healthy.
+            docker compose exec -T db sh -c 'until mariadb-admin ping -h localhost --silent; do sleep 2; done'
+            docker compose exec -T db sh -c 'mariadb -u"$MARIADB_USER" -p"$MARIADB_PASSWORD" "$MARIADB_DATABASE" < /docker-entrypoint-initdb.d/02_update_tickets_event.sql'
+            docker compose exec -T db sh -c 'mariadb -u"$MARIADB_USER" -p"$MARIADB_PASSWORD" "$MARIADB_DATABASE" < /docker-entrypoint-initdb.d/03_update_users_role.sql || true'
+            docker compose exec -T db sh -c 'mariadb -u"$MARIADB_USER" -p"$MARIADB_PASSWORD" "$MARIADB_DATABASE" < /docker-entrypoint-initdb.d/04_create_bookings_table.sql'
